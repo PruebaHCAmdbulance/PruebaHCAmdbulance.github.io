@@ -17,7 +17,6 @@
             text-align: center;
         }
 
-        /* Pestañas */
         .tab-container {
             display: flex;
             flex-direction: column;
@@ -56,7 +55,6 @@
             border-top: none;
         }
 
-        /* Estilo de formulario */
         form {
             display: flex;
             flex-direction: column;
@@ -92,7 +90,7 @@
             background-color: #e68a00;
         }
 
-        #mensajeExito {
+        #mensajeExitoPaciente, #mensajeExitoTraslado {
             display: none;
             color: #4CAF50; /* Verde */
             font-weight: bold;
@@ -109,24 +107,19 @@
         .firma {
             margin-bottom: 20px;
         }
-
     </style>
 </head>
 <body>
 
     <h1>Renacer IPS</h1>
 
-    <!-- Contenedor de pestañas -->
     <div class="tab-container">
-        <!-- Pestañas -->
         <div class="tabs">
             <div class="tab active" onclick="openTab('segundoFormulario')">Formulario de Paciente</div>
             <div class="tab" onclick="openTab('formulario')">Formulario de Traslado</div>
         </div>
 
-        <!-- Contenido de las pestañas -->
         <div id="segundoFormulario" class="tab-content">
-            <!-- Aquí va el formulario de paciente -->
             <h1>Formulario de Paciente</h1>
 
             <form id="patientForm">
@@ -190,7 +183,13 @@
                 <label for="telefonoAcompanante">Teléfono del Acompañante:</label>
                 <input type="text" id="telefonoAcompanante">
 
-                <input type="button" value="Guardar Datos" onclick="guardarDatos()">
+                <div class="firma">
+                    <label for="firmaPaciente">Firma Paciente:</label>
+                    <canvas id="firmaPaciente" width="600" height="175"></canvas>
+                    <button type="button" onclick="limpiarFirma('firmaPaciente')">Limpiar Firma</button>
+                </div>
+
+                <input type="button" value="Guardar Datos" onclick="guardarPaciente()">
             </form>
 
             <div id="mensajeExitoPaciente" class="mensaje-exito"></div>
@@ -198,7 +197,6 @@
         </div>
 
         <div id="formulario" class="tab-content" style="display: none;">
-            <!-- Aquí va el formulario de traslado -->
             <h1>Formulario de Traslado</h1>
 
             <form id="trasladoForm">
@@ -238,7 +236,6 @@
                 <label for="nota">Nota del Traslado:</label>
                 <textarea id="nota" rows="4" required></textarea>
 
-                <!-- Firmas de los médicos -->
                 <div class="firma">
                     <label for="firmaEntrega">Firma Médico Entrega:</label>
                     <canvas id="firmaEntrega" width="600" height="175"></canvas>
@@ -259,11 +256,12 @@
 
                 <input type="button" value="Guardar Traslado" onclick="guardarTraslado()">
             </form>
-            <div id="mensajeExito">¡La información se guardó de manera exitosa!</div>
+            <div id="mensajeExitoTraslado" class="mensaje-exito"></div>
         </div>
     </div>
 
     <script>
+        // Abrir y cambiar pestañas
         function openTab(tabName) {
             const tabs = document.querySelectorAll('.tab');
             const contents = document.querySelectorAll('.tab-content');
@@ -280,174 +278,164 @@
             activeTab.classList.add('active');
         }
 
+        // Limpiar firma
         function limpiarFirma(firmaId) {
             const canvas = document.getElementById(firmaId);
             const context = canvas.getContext('2d');
             context.clearRect(0, 0, canvas.width, canvas.height);
         }
-        
-// Función para obtener la fecha y hora actual del dispositivo
-function obtenerFechaYHoraActual() {
-            const ahora = new Date();
 
-            // Obtener la fecha en formato YYYY-MM-DD
-            const fecha = ahora.toISOString().split('T')[0];  // Ejemplo: 2025-03-09
-            // Obtener la hora en formato HH:mm
-            const hora = ahora.toTimeString().split(' ')[0].slice(0, 5);  // Ejemplo: 14:30
-
-            return { fecha, hora };
-        }
-
-        // Establecer la fecha y hora actuales en el formulario
-        function setFechaYHora() {
-            const { fecha, hora } = obtenerFechaYHoraActual();
-
-            // Establecer la fecha y la hora en los campos correspondientes
-            document.getElementById('fechaTraslado').value = fecha;
-            document.getElementById('horaTraslado').value = hora;
-        }
-
-        // Llamamos a la función para establecer la fecha y hora al cargar la página
-        setFechaYHora();
-
-
-
-        function guardarDatos() {
-            const primerNombre = document.getElementById('primerNombre').value;
-            const segundoNombre = document.getElementById('segundoNombre').value;
-            const primerApellido = document.getElementById('primerApellido').value;
-            const segundoApellido = document.getElementById('segundoApellido').value;
-            const tipoDocumento = document.getElementById('tipoDocumento').value;
-            const numeroDocumento = document.getElementById('numeroDocumento').value;
-            const genero = document.getElementById('genero').value;
-            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
-            const aseguradora = document.getElementById('aseguradora').value;
-            const departamentoNacimiento = document.getElementById('departamentoNacimiento').value;
-            const municipioNacimiento = document.getElementById('municipioNacimiento').value;
-            const departamentoResidencia = document.getElementById('departamentoResidencia').value;
-            const municipioResidencia = document.getElementById('municipioResidencia').value;
-            const direccionPaciente = document.getElementById('direccionPaciente').value;
-            const telefonoPaciente = document.getElementById('telefonoPaciente').value;
-            const acompanante = document.getElementById('acompanante').value;
-            const telefonoAcompanante = document.getElementById('telefonoAcompanante').value;
-
-            if (!primerNombre || !primerApellido || !numeroDocumento || !genero || !fechaNacimiento) {
-                alert("Por favor, complete los campos obligatorios.");
-                return;
-            }
-
-            const csvData = [
-                ['Primer Nombre', 'Segundo Nombre', 'Primer Apellido', 'Segundo Apellido', 'Tipo de Documento', 'Número de Documento', 'Género', 'Fecha de Nacimiento', 'Aseguradora', 'Departamento de Nacimiento', 'Municipio de Nacimiento', 'Departamento de Residencia', 'Municipio de Residencia', 'Dirección', 'Teléfono', 'Acompañante', 'Teléfono del Acompañante'],
-                [primerNombre, segundoNombre, primerApellido, segundoApellido, tipoDocumento, numeroDocumento, genero, fechaNacimiento, aseguradora, departamentoNacimiento, municipioNacimiento, departamentoResidencia, municipioResidencia, direccionPaciente, telefonoPaciente, acompanante, telefonoAcompanante]
-            ];
-
-            const csvContent = csvData.map(row => row.join(',')).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${numeroDocumento}_formulario_paciente.csv`;
-            link.click();
-            URL.revokeObjectURL(url);
-
-            document.getElementById('mensajeExitoPaciente').textContent = "¡La información se guardó de manera exitosa!";
-            setTimeout(() => {
-                document.getElementById('mensajeExitoPaciente').style.display = 'none';
-            }, 3000);
-        }
-
-        function guardarTraslado() {
-            const numeroTraslado = document.getElementById('numeroTraslado').value;
-            const fechaTraslado = document.getElementById('fechaTraslado').value;
-            const horaTraslado = document.getElementById('horaTraslado').value;
-            const origen = document.getElementById('origen').value;
-            const destino1 = document.getElementById('destino1').value;
-            const destino2 = document.getElementById('destino2').value;
-            const motivo = document.getElementById('motivo').value;
-            const vehiculo = document.getElementById('vehiculo').value;
-            const medico = document.getElementById('medico').value;
-            const auxiliar = document.getElementById('auxiliar').value;
-            const conductor = document.getElementById('conductor').value;
-            const nota = document.getElementById('nota').value;
-
-            if (!numeroTraslado || !fechaTraslado || !horaTraslado || !origen || !destino1 || !motivo || !vehiculo || !medico || !auxiliar || !conductor || !nota) {
-                alert("Por favor, complete todos los campos.");
-                return;
-            }
-
-            const csvData = [
-                ['Número de Traslado', 'Fecha de Traslado', 'Hora de Traslado', 'Origen', 'Destino 1', 'Destino 2', 'Motivo', 'Vehículo', 'Médico', 'Auxiliar', 'Conductor', 'Nota'],
-                [numeroTraslado, fechaTraslado, horaTraslado, origen, destino1, destino2, motivo, vehiculo, medico, auxiliar, conductor, nota]
-            ];
-
-            const csvContent = csvData.map(row => row.join(',')).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${numeroTraslado}_formulario_traslado.csv`;
-            link.click();
-            URL.revokeObjectURL(url);
-
-            saveSignatureAsImage('firmaEntrega', `firmaEntrega_${numeroTraslado}`);
-            saveSignatureAsImage('firmaRecibe1', `firmaRecibe1_${numeroTraslado}`);
-            saveSignatureAsImage('firmaRecibe2', `firmaRecibe2_${numeroTraslado}`);
-
-            document.getElementById('mensajeExito').textContent = "¡La información se guardó de manera exitosa!";
-            setTimeout(() => {
-                document.getElementById('mensajeExito').style.display = 'none';
-            }, 3000);
-        }
-
-        function saveSignatureAsImage(canvasId, fileName) {
+        // Función para empezar a dibujar la firma
+        function iniciarDibujo(canvasId) {
             const canvas = document.getElementById(canvasId);
-            const imageUrl = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = imageUrl;
-            link.download = `${fileName}.png`;
-            link.click();
-        }
+            const context = canvas.getContext('2d');
+            let dibujoActivo = false;
 
-        let isDrawing = false;
-        let contexts = {};
-
-        function setupCanvas(id) {
-            const canvas = document.getElementById(id);
-            contexts[id] = canvas.getContext('2d');
-            const context = contexts[id];
-
-            canvas.width = 600;
-            canvas.height = 175;
-            context.lineWidth = 2;
-            context.lineCap = 'round';
-            context.strokeStyle = 'black';
-
-            canvas.addEventListener('mousedown', (e) => {
-                isDrawing = true;
+            canvas.addEventListener('mousedown', function (e) {
+                dibujoActivo = true;
                 context.beginPath();
                 context.moveTo(e.offsetX, e.offsetY);
             });
 
-            canvas.addEventListener('mousemove', (e) => {
-                if (isDrawing) {
+            canvas.addEventListener('mousemove', function (e) {
+                if (dibujoActivo) {
                     context.lineTo(e.offsetX, e.offsetY);
                     context.stroke();
                 }
             });
 
-            canvas.addEventListener('mouseup', () => {
-                isDrawing = false;
+            canvas.addEventListener('mouseup', function () {
+                dibujoActivo = false;
             });
 
-            canvas.addEventListener('mouseout', () => {
-                isDrawing = false;
+            canvas.addEventListener('mouseout', function () {
+                dibujoActivo = false;
             });
         }
 
-        // Inicializa los lienzos de firma
-        setupCanvas('firmaEntrega');
-        setupCanvas('firmaRecibe1');
-        setupCanvas('firmaRecibe2');
+        // Obtener la firma como una imagen
+        function obtenerFirma(firmaId) {
+            const canvas = document.getElementById(firmaId);
+            return canvas.toDataURL();
+        }
+
+        // Guardar los datos y la firma del paciente
+        function guardarPaciente() {
+            const form = document.getElementById('patientForm');
+            const data = {
+                primerNombre: form.primerNombre.value,
+                segundoNombre: form.segundoNombre.value,
+                primerApellido: form.primerApellido.value,
+                segundoApellido: form.segundoApellido.value,
+                tipoDocumento: form.tipoDocumento.value,
+                numeroDocumento: form.numeroDocumento.value,
+                genero: form.genero.value,
+                fechaNacimiento: form.fechaNacimiento.value,
+                aseguradora: form.aseguradora.value,
+                departamentoNacimiento: form.departamentoNacimiento.value,
+                municipioNacimiento: form.municipioNacimiento.value,
+                departamentoResidencia: form.departamentoResidencia.value,
+                municipioResidencia: form.municipioResidencia.value,
+                direccionPaciente: form.direccionPaciente.value,
+                telefonoPaciente: form.telefonoPaciente.value,
+                acompanante: form.acompanante.value,
+                telefonoAcompanante: form.telefonoAcompanante.value
+            };
+
+            const firmaPaciente = obtenerFirma('firmaPaciente'); // Captura firma paciente
+            const csvContent = "data:text/csv;charset=utf-8,"
+                + Object.keys(data).join(",") + "\n"
+                + Object.values(data).join(",");
+
+            const numeroDocumento = data.numeroDocumento;
+            const filename = `paciente-${numeroDocumento}.csv`;
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+
+            // Crear enlace para descarga de la firma
+            const linkFirmaPaciente = document.createElement("a");
+            linkFirmaPaciente.setAttribute("href", firmaPaciente);
+            linkFirmaPaciente.setAttribute("download", `FirmaPaciente-${numeroDocumento}.png`);
+            document.body.appendChild(linkFirmaPaciente);
+            linkFirmaPaciente.click();
+
+            // Mostrar mensaje de éxito
+            document.getElementById('mensajeExitoPaciente').style.display = 'block';
+            document.getElementById('mensajeExitoPaciente').innerText = '¡Datos de paciente guardados exitosamente!';
+            form.reset();
+        }
+
+        // Guardar los datos y firmas del traslado
+        function guardarTraslado() {
+            const form = document.getElementById('trasladoForm');
+            const data = {
+                numeroTraslado: form.numeroTraslado.value,
+                fechaTraslado: form.fechaTraslado.value,
+                horaTraslado: form.horaTraslado.value,
+                origen: form.origen.value,
+                destino1: form.destino1.value,
+                destino2: form.destino2.value,
+                motivo: form.motivo.value,
+                vehiculo: form.vehiculo.value,
+                medico: form.medico.value,
+                auxiliar: form.auxiliar.value,
+                conductor: form.conductor.value,
+                nota: form.nota.value
+            };
+
+            const firmaEntrega = obtenerFirma('firmaEntrega');
+            const firmaRecibe1 = obtenerFirma('firmaRecibe1');
+            const firmaRecibe2 = obtenerFirma('firmaRecibe2');
+
+            const csvContent = "data:text/csv;charset=utf-8,"
+                + Object.keys(data).join(",") + "\n"
+                + Object.values(data).join(",");
+
+            const numeroTraslado = data.numeroTraslado;
+            const filename = `traslado-${numeroTraslado}.csv`;
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+
+            // Descargar imágenes de las firmas
+            const linkFirmaEntrega = document.createElement("a");
+            linkFirmaEntrega.setAttribute("href", firmaEntrega);
+            linkFirmaEntrega.setAttribute("download", `FirmaEntrega-${numeroTraslado}.png`);
+            document.body.appendChild(linkFirmaEntrega);
+            linkFirmaEntrega.click();
+
+            const linkFirmaRecibe1 = document.createElement("a");
+            linkFirmaRecibe1.setAttribute("href", firmaRecibe1);
+            linkFirmaRecibe1.setAttribute("download", `FirmaRecibe1-${numeroTraslado}.png`);
+            document.body.appendChild(linkFirmaRecibe1);
+            linkFirmaRecibe1.click();
+
+            const linkFirmaRecibe2 = document.createElement("a");
+            linkFirmaRecibe2.setAttribute("href", firmaRecibe2);
+            linkFirmaRecibe2.setAttribute("download", `FirmaRecibe2-${numeroTraslado}.png`);
+            document.body.appendChild(linkFirmaRecibe2);
+            linkFirmaRecibe2.click();
+
+            // Mostrar mensaje de éxito
+            document.getElementById('mensajeExitoTraslado').style.display = 'block';
+            document.getElementById('mensajeExitoTraslado').innerText = '¡Datos de traslado guardados exitosamente!';
+            form.reset();
+        }
+
+        // Inicialización de las firmas
+        window.onload = function() {
+            iniciarDibujo('firmaPaciente');
+            iniciarDibujo('firmaEntrega');
+            iniciarDibujo('firmaRecibe1');
+            iniciarDibujo('firmaRecibe2');
+        };
     </script>
 
 </body>
