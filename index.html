@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renacer IPS</title>
+    <style>
+        body {
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 25px;
+        }
+
+        h1 {
+            color: #FF7F00; /* Naranja */
+            text-align: center;
+        }
+
+        /* Pestañas */
+        .tab-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: #444;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab {
+            padding: 15px;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            background-color: #555;
+            color: white;
+            border: 1px solid #444;
+        }
+
+        .tab:hover {
+            background-color: #666;
+        }
+
+        .tab.active {
+            background-color: #FF7F00;
+        }
+
+        .tab-content {
+            padding: 20px;
+            background-color: #444;
+            border: 1px solid #444;
+            border-top: none;
+        }
+
+        /* Estilo de formulario */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background-color: #444;
+            color: white;
+        }
+
+        input[type="button"], input[type="submit"] {
+            background-color: #FF7F00; /* Naranja */
+            color: white;
+            cursor: pointer;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+        }
+
+        input[type="button"]:hover, input[type="submit"]:hover {
+            background-color: #e68a00;
+        }
+
+        #mensajeExito {
+            display: none;
+            color: #4CAF50; /* Verde */
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        canvas {
+            border: 2px solid #fff;
+            background-color: white;
+            margin-top: 10px;
+        }
+
+        .firma {
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Renacer IPS</h1>
+
+    <!-- Contenedor de pestañas -->
+    <div class="tab-container">
+        <!-- Pestañas -->
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('segundoFormulario')">Formulario de Paciente</div>
+            <div class="tab" onclick="openTab('formulario')">Formulario de Traslado</div>
+        </div>
+
+        <!-- Contenido de las pestañas -->
+        <div id="segundoFormulario" class="tab-content">
+            <!-- Aquí va el formulario de paciente -->
+            <h1>Formulario de Paciente</h1>
+
+            <form id="patientForm">
+                <label for="primerNombre">Primer Nombre:</label>
+                <input type="text" id="primerNombre" required>
+
+                <label for="segundoNombre">Segundo Nombre:</label>
+                <input type="text" id="segundoNombre">
+
+                <label for="primerApellido">Primer Apellido:</label>
+                <input type="text" id="primerApellido" required>
+
+                <label for="segundoApellido">Segundo Apellido:</label>
+                <input type="text" id="segundoApellido">
+
+                <label for="tipoDocumento">Tipo de Documento:</label>
+                <select id="tipoDocumento" required>
+                    <option value="CC">Cédula de Ciudadanía</option>
+                    <option value="TI">Tarjeta de Identidad</option>
+                    <option value="CE">Cédula de Extranjería</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                </select>
+
+                <label for="numeroDocumento">Número de Documento:</label>
+                <input type="text" id="numeroDocumento" required>
+
+                <label for="genero">Género:</label>
+                <select id="genero" required>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+
+                <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                <input type="date" id="fechaNacimiento" required>
+
+                <label for="aseguradora">Aseguradora:</label>
+                <input type="text" id="aseguradora">
+
+                <label for="departamentoNacimiento">Departamento de Nacimiento:</label>
+                <input type="text" id="departamentoNacimiento">
+
+                <label for="municipioNacimiento">Municipio de Nacimiento:</label>
+                <input type="text" id="municipioNacimiento">
+
+                <label for="departamentoResidencia">Departamento de Residencia:</label>
+                <input type="text" id="departamentoResidencia">
+
+                <label for="municipioResidencia">Municipio de Residencia:</label>
+                <input type="text" id="municipioResidencia">
+
+                <label for="direccionPaciente">Dirección del Paciente:</label>
+                <input type="text" id="direccionPaciente">
+
+                <label for="telefonoPaciente">Teléfono del Paciente:</label>
+                <input type="text" id="telefonoPaciente">
+
+                <label for="acompanante">Acompañante:</label>
+                <input type="text" id="acompanante">
+
+                <label for="telefonoAcompanante">Teléfono del Acompañante:</label>
+                <input type="text" id="telefonoAcompanante">
+
+                <input type="button" value="Guardar Datos" onclick="guardarDatos()">
+            </form>
+
+            <div id="mensajeExitoPaciente" class="mensaje-exito"></div>
+
+        </div>
+
+        <div id="formulario" class="tab-content" style="display: none;">
+            <!-- Aquí va el formulario de traslado -->
+            <h1>Formulario de Traslado</h1>
+
+            <form id="trasladoForm">
+                <label for="numeroTraslado">Número de Traslado:</label>
+                <input type="text" id="numeroTraslado" required>
+
+                <label for="fechaTraslado">Fecha de Traslado:</label>
+                <input type="date" id="fechaTraslado" required>
+
+                <label for="horaTraslado">Hora de Traslado:</label>
+                <input type="time" id="horaTraslado" required>
+
+                <label for="origen">Origen del Traslado:</label>
+                <input type="text" id="origen" required>
+
+                <label for="destino1">Destino de Traslado 1:</label>
+                <input type="text" id="destino1" required>
+
+                <label for="destino2">Destino de Traslado 2:</label>
+                <input type="text" id="destino2">
+
+                <label for="motivo">Motivo del Traslado:</label>
+                <input type="text" id="motivo" required>
+
+                <label for="vehiculo">Vehículo Ambulancia:</label>
+                <input type="text" id="vehiculo" required>
+
+                <label for="medico">Médico de Traslado:</label>
+                <input type="text" id="medico" required>
+
+                <label for="auxiliar">Auxiliar de Enfermería:</label>
+                <input type="text" id="auxiliar" required>
+
+                <label for="conductor">Conductor:</label>
+                <input type="text" id="conductor" required>
+
+                <label for="nota">Nota del Traslado:</label>
+                <textarea id="nota" rows="4" required></textarea>
+
+                <!-- Firmas de los médicos -->
+                <div class="firma">
+                    <label for="firmaEntrega">Firma Médico Entrega:</label>
+                    <canvas id="firmaEntrega" width="600" height="175"></canvas>
+                    <button type="button" onclick="limpiarFirma('firmaEntrega')">Limpiar Firma</button>
+                </div>
+
+                <div class="firma">
+                    <label for="firmaRecibe1">Firma Médico Recibe 1:</label>
+                    <canvas id="firmaRecibe1" width="600" height="175"></canvas>
+                    <button type="button" onclick="limpiarFirma('firmaRecibe1')">Limpiar Firma</button>
+                </div>
+
+                <div class="firma">
+                    <label for="firmaRecibe2">Firma Médico Recibe 2:</label>
+                    <canvas id="firmaRecibe2" width="600" height="175"></canvas>
+                    <button type="button" onclick="limpiarFirma('firmaRecibe2')">Limpiar Firma</button>
+                </div>
+
+                <input type="button" value="Guardar Traslado" onclick="guardarTraslado()">
+            </form>
+            <div id="mensajeExito">¡La información se guardó de manera exitosa!</div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            contents.forEach(content => {
+                content.style.display = 'none';
+            });
+
+            document.querySelector(`#${tabName}`).style.display = 'block';
+            const activeTab = Array.from(tabs).find(tab => tab.textContent === tabName.replace(/[A-Z]/g, (match) => " " + match.toLowerCase()));
+            activeTab.classList.add('active');
+        }
+
+        function limpiarFirma(firmaId) {
+            const canvas = document.getElementById(firmaId);
+            const context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+// Función para obtener la fecha y hora actual del dispositivo
+function obtenerFechaYHoraActual() {
+            const ahora = new Date();
+
+            // Obtener la fecha en formato YYYY-MM-DD
+            const fecha = ahora.toISOString().split('T')[0];  // Ejemplo: 2025-03-09
+            // Obtener la hora en formato HH:mm
+            const hora = ahora.toTimeString().split(' ')[0].slice(0, 5);  // Ejemplo: 14:30
+
+            return { fecha, hora };
+        }
+
+        // Establecer la fecha y hora actuales en el formulario
+        function setFechaYHora() {
+            const { fecha, hora } = obtenerFechaYHoraActual();
+
+            // Establecer la fecha y la hora en los campos correspondientes
+            document.getElementById('fechaTraslado').value = fecha;
+            document.getElementById('horaTraslado').value = hora;
+        }
+
+        // Llamamos a la función para establecer la fecha y hora al cargar la página
+        setFechaYHora();
+
+
+
+        function guardarDatos() {
+            const primerNombre = document.getElementById('primerNombre').value;
+            const segundoNombre = document.getElementById('segundoNombre').value;
+            const primerApellido = document.getElementById('primerApellido').value;
+            const segundoApellido = document.getElementById('segundoApellido').value;
+            const tipoDocumento = document.getElementById('tipoDocumento').value;
+            const numeroDocumento = document.getElementById('numeroDocumento').value;
+            const genero = document.getElementById('genero').value;
+            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+            const aseguradora = document.getElementById('aseguradora').value;
+            const departamentoNacimiento = document.getElementById('departamentoNacimiento').value;
+            const municipioNacimiento = document.getElementById('municipioNacimiento').value;
+            const departamentoResidencia = document.getElementById('departamentoResidencia').value;
+            const municipioResidencia = document.getElementById('municipioResidencia').value;
+            const direccionPaciente = document.getElementById('direccionPaciente').value;
+            const telefonoPaciente = document.getElementById('telefonoPaciente').value;
+            const acompanante = document.getElementById('acompanante').value;
+            const telefonoAcompanante = document.getElementById('telefonoAcompanante').value;
+
+            if (!primerNombre || !primerApellido || !numeroDocumento || !genero || !fechaNacimiento) {
+                alert("Por favor, complete los campos obligatorios.");
+                return;
+            }
+
+            const csvData = [
+                ['Primer Nombre', 'Segundo Nombre', 'Primer Apellido', 'Segundo Apellido', 'Tipo de Documento', 'Número de Documento', 'Género', 'Fecha de Nacimiento', 'Aseguradora', 'Departamento de Nacimiento', 'Municipio de Nacimiento', 'Departamento de Residencia', 'Municipio de Residencia', 'Dirección', 'Teléfono', 'Acompañante', 'Teléfono del Acompañante'],
+                [primerNombre, segundoNombre, primerApellido, segundoApellido, tipoDocumento, numeroDocumento, genero, fechaNacimiento, aseguradora, departamentoNacimiento, municipioNacimiento, departamentoResidencia, municipioResidencia, direccionPaciente, telefonoPaciente, acompanante, telefonoAcompanante]
+            ];
+
+            const csvContent = csvData.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${numeroDocumento}_formulario_paciente.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            document.getElementById('mensajeExitoPaciente').textContent = "¡La información se guardó de manera exitosa!";
+            setTimeout(() => {
+                document.getElementById('mensajeExitoPaciente').style.display = 'none';
+            }, 3000);
+        }
+
+        function guardarTraslado() {
+            const numeroTraslado = document.getElementById('numeroTraslado').value;
+            const fechaTraslado = document.getElementById('fechaTraslado').value;
+            const horaTraslado = document.getElementById('horaTraslado').value;
+            const origen = document.getElementById('origen').value;
+            const destino1 = document.getElementById('destino1').value;
+            const destino2 = document.getElementById('destino2').value;
+            const motivo = document.getElementById('motivo').value;
+            const vehiculo = document.getElementById('vehiculo').value;
+            const medico = document.getElementById('medico').value;
+            const auxiliar = document.getElementById('auxiliar').value;
+            const conductor = document.getElementById('conductor').value;
+            const nota = document.getElementById('nota').value;
+
+            if (!numeroTraslado || !fechaTraslado || !horaTraslado || !origen || !destino1 || !motivo || !vehiculo || !medico || !auxiliar || !conductor || !nota) {
+                alert("Por favor, complete todos los campos.");
+                return;
+            }
+
+            const csvData = [
+                ['Número de Traslado', 'Fecha de Traslado', 'Hora de Traslado', 'Origen', 'Destino 1', 'Destino 2', 'Motivo', 'Vehículo', 'Médico', 'Auxiliar', 'Conductor', 'Nota'],
+                [numeroTraslado, fechaTraslado, horaTraslado, origen, destino1, destino2, motivo, vehiculo, medico, auxiliar, conductor, nota]
+            ];
+
+            const csvContent = csvData.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${numeroTraslado}_formulario_traslado.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            saveSignatureAsImage('firmaEntrega', `firmaEntrega_${numeroTraslado}`);
+            saveSignatureAsImage('firmaRecibe1', `firmaRecibe1_${numeroTraslado}`);
+            saveSignatureAsImage('firmaRecibe2', `firmaRecibe2_${numeroTraslado}`);
+
+            document.getElementById('mensajeExito').textContent = "¡La información se guardó de manera exitosa!";
+            setTimeout(() => {
+                document.getElementById('mensajeExito').style.display = 'none';
+            }, 3000);
+        }
+
+        function saveSignatureAsImage(canvasId, fileName) {
+            const canvas = document.getElementById(canvasId);
+            const imageUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = `${fileName}.png`;
+            link.click();
+        }
+
+        let isDrawing = false;
+        let contexts = {};
+
+        function setupCanvas(id) {
+            const canvas = document.getElementById(id);
+            contexts[id] = canvas.getContext('2d');
+            const context = contexts[id];
+
+            canvas.width = 600;
+            canvas.height = 175;
+            context.lineWidth = 2;
+            context.lineCap = 'round';
+            context.strokeStyle = 'black';
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                context.beginPath();
+                context.moveTo(e.offsetX, e.offsetY);
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) {
+                    context.lineTo(e.offsetX, e.offsetY);
+                    context.stroke();
+                }
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+
+            canvas.addEventListener('mouseout', () => {
+                isDrawing = false;
+            });
+        }
+
+        // Inicializa los lienzos de firma
+        setupCanvas('firmaEntrega');
+        setupCanvas('firmaRecibe1');
+        setupCanvas('firmaRecibe2');
+    </script>
+
+</body>
+</html>
