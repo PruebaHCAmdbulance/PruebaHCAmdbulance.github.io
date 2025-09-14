@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ambulancia Renacer IPS</title>
+    <title>Ambulancia Renacer IPS 2</title>
     <style>
 
         canvas {
@@ -529,20 +529,23 @@
             window.addEventListener('load', ajustarCanvas);
 
             // Clase para guardar imagen
+            // Clase para guardar imagen (compatible iOS / Android)
             class GuardarImagen {
                 constructor(canvas) {
                     this.canvas = canvas;
                 }
 
                 guardar(nombre) {
-                    const dataUrl = this.canvas.toDataURL("image/png");
-                    const enlace = document.createElement("a");
-                    enlace.href = dataUrl;
-                    enlace.download = `${nombre}.png`;
-                    enlace.target = '_self';
-                    document.body.appendChild(enlace);
-                    enlace.click();
-                    document.body.removeChild(enlace);
+                    // ✅ Convertir el canvas a Blob (mejor compatibilidad)
+                    this.canvas.toBlob(blob => {
+                        if (!blob) return;
+
+                        // ✅ Nombre del archivo
+                        const fileName = `${nombre}.png`;
+
+                        // ✅ Guardar con FileSaver.js (funciona en iOS/Android)
+                        saveAs(blob, fileName);
+                    }, 'image/png');
                 }
             }
 
@@ -604,21 +607,30 @@
             document.querySelector('#colorTinta').addEventListener('input', e => colorLapiz = e.target.value);
             document.querySelector('#grosorLapiz').addEventListener('input', e => grosorLapiz = e.target.value);
 
-            document.querySelector('#guardar').addEventListener('click', () => {
-            const nombreFirma = document.querySelector('#nombreFirma').value.trim();
-            const numeroDocumentoFirma = document.querySelector('#numeroTrasladoFirma').value.trim();
 
-            // ✅ Validar que el número no esté vacío
-            if (!numeroDocumentoFirma) {
-                alert('Por favor, ingresa el número de traslado antes de guardar.');
-                return; // Detiene la ejecución si está vacío
-            }
+// ✅ Evento de guardar con validación
+document.querySelector('#guardar').addEventListener('click', () => {
+    const nombreFirma = document.querySelector('#nombreFirma').value.trim();
+    const numeroDocumentoFirma = document.querySelector('#numeroTrasladoFirma').value.trim();
 
-            const nombreArchivo = `${nombreFirma}-${numeroDocumentoFirma}`;
-            guardarImagen.guardar(nombreArchivo);
-        });
+    // ✅ Validar que el número de traslado no esté vacío
+    if (!numeroDocumentoFirma) {
+        alert('Por favor, ingresa el número de traslado antes de guardar.');
+        return; // Detiene la ejecución si no hay número
+    }
+
+    // ✅ Si el nombre está vacío, solo se usará el número
+    const nombreArchivo = nombreFirma
+        ? `${nombreFirma}-${numeroDocumentoFirma}`
+        : `Traslado-${numeroDocumentoFirma}`;
+
+    guardarImagen.guardar(nombreArchivo);
+});
 
 
+
+
+        
         function showContent(tabId) {
             const contents = document.querySelectorAll('.content');
             contents.forEach(content => {
@@ -697,15 +709,17 @@
             ];
 
             const csvRows = csvContent.map(row => row.join(',')).join('\n');
-            const blob = new Blob([csvRows], { type: 'text/csv' });
 
+            // ✅ Solo UNA vez se define el blob, con charset utf-8 para acentos
+            const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8' });
+
+            // ✅ Solo UNA vez se define el nombre del archivo
             const numeroTraslado = data.numeroTraslado || 'desconocido';
             const fileName = `Traslado-${numeroTraslado}.csv`;
 
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
+            // ✅ FileSaver.js inicia la descarga/compartir
+            saveAs(blob, fileName);
+
 
             alert('¡Datos del traslado guardados correctamente en la base de datos!');
         });
