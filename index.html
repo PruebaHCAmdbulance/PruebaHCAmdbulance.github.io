@@ -3,285 +3,712 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renacer IPS</title>
+    <title>Ambulancia Renacer IPS</title>
     <style>
+
+        canvas {
+        width: 100%;
+        height: auto;
+        max-width: 450px;
+        aspect-ratio: 4 / 3;
+        background-color: #fff;
+        border: 2px solid #000;
+        display: block;
+        }
+
         body {
-            background-color: #333;
+            background-color: #121212;
             color: white;
             font-family: Arial, sans-serif;
-            margin: 25px;
         }
 
         h1 {
-            color: #FF7F00; /* Naranja */
             text-align: center;
-        }
-
-        .tab-container {
-            display: flex;
-            flex-direction: column;
-            max-width: 800px;
-            margin: 0 auto;
+            color: orange;
+            margin-top: 20px;
         }
 
         .tabs {
             display: flex;
-            background-color: #444;
-            border-radius: 5px 5px 0 0;
-        }
-
-        .tab {
-            padding: 15px;
-            cursor: pointer;
-            flex: 1;
-            text-align: center;
-            background-color: #555;
-            color: white;
-            border: 1px solid #444;
-        }
-
-        .tab:hover {
-            background-color: #666;
-        }
-
-        .tab.active {
-            background-color: #FF7F00;
-        }
-
-        .tab-content {
-            padding: 20px;
-            background-color: #444;
-            border: 1px solid #444;
-            border-top: none;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        label {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        input, select, textarea {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #555;
-            background-color: #444;
-            color: white;
-        }
-
-        input[type="button"], input[type="submit"] {
-            background-color: #FF7F00; /* Naranja */
-            color: white;
-            cursor: pointer;
-            border: none;
-            padding: 12px;
-            font-size: 18px;
-        }
-
-        input[type="button"]:hover, input[type="submit"]:hover {
-            background-color: #e68a00;
-        }
-
-        #mensajeExitoPaciente, #mensajeExitoTraslado {
-            display: none;
-            color: #4CAF50; /* Verde */
-            font-weight: bold;
-            text-align: center;
+            justify-content: center;
             margin-top: 20px;
         }
 
-        canvas {
-            border: 2px solid #fff;
-            background-color: white;
-            margin-top: 10px;
-        }
-
-        .firma {
-            margin-bottom: 20px;
-        }
-
-        .toolbar {
-            margin-bottom: 10px;
-        }
-
-        .toolbar button {
-            background-color: #FF7F00;
-            color: white;
-            padding: 10px;
-            border: none;
+        .tab {
+            margin: 0 10px; /* Reducido el margen entre las pestañas */
+            padding: 10px 20px;
             cursor: pointer;
-            margin-right: 5px;
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 5px;
         }
 
-        .toolbar button:hover {
-            background-color: #e68a00;
+        .tab:hover {
+            background-color: #555;
         }
 
-        .toolbar input[type="color"] {
-            padding: 5px;
+        .content {
+            display: none;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .active-tab {
+            display: block;
+        }
+
+        h2 {
+            color: orange;  /* Color naranja para los subtítulos */
+        }
+
+        form {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: white;
+            text-align: left;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background-color: #222;
+            color: white;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
             border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
+
+        button:hover {
+            background-color: #e87e01;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                width: 95%;
+            }
+
+            .tabs {
+                flex-direction: column;
+                margin-top: 10px;
+            }
+
+            .tab {
+                margin: 5px 0;
+            }
+        }
+
+        .contenedor-opciones {
+            display: flex; /* Flexbox para alinear los elementos en línea */
+            gap: 10px; /* Espacio entre los elementos */
+            justify-content: space-between; /* Alinea los elementos con espacio entre ellos */
+            width: 95%; /* Asegura que ocupe todo el ancho disponible */
+        }
+
+        .contenedor-opciones input, 
+        .contenedor-opciones select {
+            flex: 1; /* Proporción de la primera columna */
+        }
+
+        .contenedor-opciones input:nth-child(2), 
+        .contenedor-opciones select:nth-child(2) {
+            flex: 1.5; /* Proporción de la segunda columna */
+        }
+
+        .contenedor-opciones input:nth-child(3), 
+        .contenedor-opciones select:nth-child(3) {
+            flex: 1.5; /* Proporción de la tercera columna */
+        }
+        .contenedor-botones {
+            display: flex; /* Flexbox para alinear los elementos en línea */
+            gap: 10px; /* Espacio entre los botones */
+            justify-content: space-between; /* Espacio entre los controles */
+            width: 44%; /* El contenedor no ocupa todo el ancho de la página */
+            margin: 0 auto; /* Centra el contenedor */
+        }
+
+        input[type="color"] {
+      -webkit-appearance: none; /* Elimina la apariencia predeterminada del navegador */
+      width: 50px; /* Puedes ajustar el ancho */
+      height: 50px; /* Aquí puedes cambiar la altura */
+      border:none; /* Si no quieres bordes */
+      padding: 5; /* Elimina cualquier espacio interno */
+    }
 
     </style>
 </head>
 <body>
+    <h1>Ambulancia Renacer IPS</h1>
 
-    <h1>Renacer IPS</h1>
-
-    <div class="tab-container">
-        <div class="tabs">
-            <div class="tab active" onclick="openTab('segundoFormulario')">Formulario de Paciente</div>
-            <div class="tab" onclick="openTab('formulario')">Formulario de Traslado</div>
-        </div>
-
-        <div id="segundoFormulario" class="tab-content">
-            <h1>Formulario de Paciente</h1>
-
-            <form id="patientForm">
-                <!-- Formulario de paciente -->
-                <!-- ... El contenido del formulario permanece igual ... -->
-
-                <div class="firma">
-                    <label for="firmaPaciente">Firma Paciente:</label>
-                    <div class="toolbar">
-                        <button type="button" onclick="seleccionarLapiz('firmaPaciente')">Lápiz</button>
-                        <button type="button" onclick="seleccionarBorrador('firmaPaciente')">Borrador</button>
-                        <input type="color" id="colorFirmaPaciente" onchange="cambiarColor('firmaPaciente')">
-                    </div>
-                    <canvas id="firmaPaciente" width="600" height="175"></canvas>
-                    <button type="button" onclick="limpiarFirma('firmaPaciente')">Limpiar Firma</button>
-                </div>
-
-                <input type="button" value="Guardar Datos" onclick="guardarPaciente()">
-            </form>
-
-            <div id="mensajeExitoPaciente" class="mensaje-exito"></div>
-
-        </div>
-
-        <div id="formulario" class="tab-content" style="display: none;">
-            <h1>Formulario de Traslado</h1>
-
-            <form id="trasladoForm">
-                <!-- Formulario de traslado -->
-                <!-- ... El contenido del formulario permanece igual ... -->
-
-                <div class="firma">
-                    <label for="firmaEntrega">Firma Médico Entrega:</label>
-                    <div class="toolbar">
-                        <button type="button" onclick="seleccionarLapiz('firmaEntrega')">Lápiz</button>
-                        <button type="button" onclick="seleccionarBorrador('firmaEntrega')">Borrador</button>
-                        <input type="color" id="colorFirmaEntrega" onchange="cambiarColor('firmaEntrega')">
-                    </div>
-                    <canvas id="firmaEntrega" width="600" height="175"></canvas>
-                    <button type="button" onclick="limpiarFirma('firmaEntrega')">Limpiar Firma</button>
-                </div>
-
-                <div class="firma">
-                    <label for="firmaRecibe1">Firma Médico Recibe 1:</label>
-                    <div class="toolbar">
-                        <button type="button" onclick="seleccionarLapiz('firmaRecibe1')">Lápiz</button>
-                        <button type="button" onclick="seleccionarBorrador('firmaRecibe1')">Borrador</button>
-                        <input type="color" id="colorFirmaRecibe1" onchange="cambiarColor('firmaRecibe1')">
-                    </div>
-                    <canvas id="firmaRecibe1" width="600" height="175"></canvas>
-                    <button type="button" onclick="limpiarFirma('firmaRecibe1')">Limpiar Firma</button>
-                </div>
-
-                <div class="firma">
-                    <label for="firmaRecibe2">Firma Médico Recibe 2:</label>
-                    <div class="toolbar">
-                        <button type="button" onclick="seleccionarLapiz('firmaRecibe2')">Lápiz</button>
-                        <button type="button" onclick="seleccionarBorrador('firmaRecibe2')">Borrador</button>
-                        <input type="color" id="colorFirmaRecibe2" onchange="cambiarColor('firmaRecibe2')">
-                    </div>
-                    <canvas id="firmaRecibe2" width="600" height="175"></canvas>
-                    <button type="button" onclick="limpiarFirma('firmaRecibe2')">Limpiar Firma</button>
-                </div>
-
-                <input type="button" value="Guardar Traslado" onclick="guardarTraslado()">
-            </form>
-            <div id="mensajeExitoTraslado" class="mensaje-exito"></div>
-        </div>
+    <div class="tabs">
+        <div class="tab" onclick="showContent('registro-pacientes')">Registro de pacientes</div>
+        <div class="tab" onclick="showContent('registro-traslados')">Registro de traslados</div>
+        <div class="tab" onclick="showContent('registro-firmas')">Registro de firmas</div>
     </div>
 
+    <div id="registro-pacientes" class="content">
+        <h2>Registro de pacientes</h2>
+
+        <form id="registroForm">
+            
+            <label for="primernombre">Primer Nombre</label>
+            <input type="text" id="primernombre" name="primernombre" required>
+            
+            <label for="segundonombre">Segundo Nombre</label>
+            <input type="text" id="segundonombre" name="segundonombre">
+            
+            <label for="primerapellido">Primer Apellido</label>
+            <input type="text" id="primerapellido" name="primerapellido" required>
+            
+            <label for="segundoapellido">Segundo Apellido</label>
+            <input type="text" id="segundoapellido" name="segundoapellido">
+
+            <label for="tipoDocumento">Tipo de documento</label>
+            <select id="tipoDocumento" name="tipoDocumento" required>
+
+                <option value="RC">RC - Registro Civil</option>
+                <option value="TI">TI - Tarjeta de Identidad</option>
+                <option value="CC">CC - Cédula de Ciudadanía</option>
+                <option value="CE">CE - Cédula de extranjería</option>
+                <option value="PA">PA - Pasaporte</option>
+                <option value="CD">CD - Carné Diplomático</option>
+                <option value="DE">DE - Documento extranjero</option>
+                <option value="SC">SC - Salvoconducto</option>
+                <option value="PE">PE - Permiso Especial de Permanencia)</option>
+
+            </select>
+
+            <label for="numeroDocumento">Número de documento</label>
+            <input type="number" id="numeroDocumento" name="numeroDocumento" required>
+
+            <label for="genero">Género</label>
+            <select id="genero" name="genero" required>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+            </select>
+
+            <label for="fechaNacimiento">Fecha de nacimiento</label>
+            <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
+
+            <label for="lugarNacimiento">Lugar de nacimiento</label>
+            <input type="file" id="archivoColombia" accept=".mdbx" />
+    
+            <!-- Select para Departamento de Nacimiento -->
+            <label for="departamentosNacimiento">Departamento de Nacimiento:</label>
+            <select id="departamentosNacimiento" name="departamentosNacimiento" required>
+                <option value="">Seleccione un Departamento</option>
+            </select>
+        
+            <!-- Select para Municipio de Nacimiento -->
+            <label for="municipiosNacimiento">Municipio de Nacimiento:</label>
+            <select id="municipiosNacimiento" name="municipiosNacimiento" required>
+                <option value="">Seleccione un Municipio</option>
+            </select>
+
+            <label for="aseguradora">Aseguradora</label>
+            <input type="text" id="aseguradora" name="aseguradora" required>
+
+             <!-- Select para Departamento de Residencia -->
+            <label for="departamentosResidencia">Departamento de Residencia:</label>
+            <select id="departamentosResidencia" name="departamentosResidencia" required>
+                <option value="">Seleccione un Departamento</option>
+            </select>
+
+            <!-- Select para Municipio de Residencia -->
+            <label for="municipiosResidencia">Municipio de Residencia:</label>
+            <select id="municipiosResidencia" name="municipiosResidencia" required>
+                <option value="">Seleccione un Municipio</option>
+            </select>
+
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" name="direccion" required>
+
+            <label for="telefono">Teléfono</label>
+            <input type="number" id="telefono" name="telefono" required>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+
+    <div id="registro-traslados" class="content">
+        <h2>Registro de traslados</h2>
+
+        <form id="trasladoForm">
+            <label for="numeroTraslado">Número traslado</label>
+            <input type="number" id="numeroTraslado" name="numeroTraslado" required>
+
+            <label for="origen">Origen</label>
+            <input type="text" id="origen" name="origen" required>
+
+            <label for="fechaHoraSalida">Fecha y hora de salida</label>
+            <input type="datetime-local" id="fechaHoraSalida" name="fechaHoraSalida" required>
+
+            <label for="destinoUno">Destino uno</label>
+            <input type="text" id="destinoUno" name="destinoUno" required>
+
+            <label for="fechaHoraLlegadaUno">Fecha y hora de llegada (Destino uno)</label>
+            <input type="datetime-local" id="fechaHoraLlegadaUno" name="fechaHoraLlegadaUno" required>
+
+            <label for="destinoDos">Destino dos</label>
+            <input type="text" id="destinoDos" name="destinoDos">
+
+            <label for="fechaHoraLlegadaDos">Fecha y hora de llegada (Destino dos)</label>
+            <input type="datetime-local" id="fechaHoraLlegadaDos" name="fechaHoraLlegadaDos">
+
+            <label for="motivoTraslado">Motivo de traslado</label>
+            <input type="text" id="motivoTraslado" name="motivoTraslado" required>
+
+            <label for="medicoTraslado">Médico de traslado</label>
+            <input type="text" id="medicoTraslado" name="medicoTraslado">
+
+            <label for="enfermeraTraslado">Enfermera de traslado</label>
+            <input type="text" id="enfermeraTraslado" name="enfermeraTraslado" required>
+
+            <label for="conductorTraslado">Conductor de traslado</label>
+            <input type="text" id="conductorTraslado" name="conductorTraslado" required>
+
+            <label for="profesionalEntrega">Profesional que entrega</label>
+            <input type="text" id="profesionalEntrega" name="profesionalEntrega" required>
+
+            <label for="profesionalRecibeUno">Profesional que recibe destino uno</label>
+            <input type="text" id="profesionalRecibeUno" name="profesionalRecibeUno" required>
+
+            <label for="profesionalRecibeDos">Profesional que recibe destino dos</label>
+            <input type="text" id="profesionalRecibeDos" name="profesionalRecibeDos">
+
+            <label for="nombreAcompañante">Nombre del acompañante</label>
+            <input type="text" id="nombreAcompañante" name="nombreAcompañante" required>
+    
+            <label for="telefonoAcompañante">Teléfono del acompañante</label>
+            <input type="number" id="telefonoAcompañante" name="telefonoAcompañante" required>
+
+            <label for="notasTraslado">Notas de traslado</label>
+            <textarea id="notasTraslado" name="notasTraslado" rows="8" placeholder="Ingrese las notas del traslado..." required></textarea>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+
+    <div id="registro-firmas" class="content">
+        <h2>Registro de firmas</h2>
+      
+        <form id="firmaForm">
+          <label for="numeroTrasladoFirma">Número traslado</label>
+          <input type="number" id="numeroTrasladoFirma" name="numeroTraslado" required>
+      
+          <label for="nombreFirma">Tipo de firma</label>
+          <select id="nombreFirma" name="nombreFirma" class="boton">
+            <option value="Firma Paciente">Firma Paciente</option>
+            <option value="Firma entrega">Firma entrega</option>
+            <option value="Firma recibe 1">Firma recibe 1</option>
+            <option value="Firma recibe 2">Firma recibe 2</option>
+          </select>
+      
+          <label for="pizarra">Área de firma</label>
+          <canvas id="pizarra"></canvas>
+      
+          <label for="colorTinta">Color de tinta</label>
+          <input type="color" id="colorTinta" name="colorTinta" class="boton" value="#000000">
+      
+          <label for="grosorLapiz">Grosor del lápiz</label>
+          <input type="range" id="grosorLapiz" name="grosorLapiz" class="boton" min="1" max="20" value="5">
+      
+          <div class="contenedor-botones">
+            <button type="button" id="limpiar" class="boton">Limpiar</button>
+            <button type="button" id="guardar" class="boton">Guardar</button>
+          </div>
+        </form>
+      </div>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+
     <script>
-        // Función para iniciar el dibujo en el lienzo
-        function iniciarDibujo(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            const context = canvas.getContext('2d');
-            let dibujoActivo = false;
-            let tipoHerramienta = 'lapiz'; // Default to lapiz
-            let color = '#000000'; // Default to black
-            let grosor = 3; // Default pencil size
 
-            canvas.addEventListener('mousedown', function (e) {
-                dibujoActivo = true;
-                context.beginPath();
-                context.moveTo(e.offsetX, e.offsetY);
-            });
+        let departamentosData = [];  // Para almacenar los departamentos únicos
+        let municipiosData = [];     // Para almacenar todos los municipios
+        let departamentosMunicipios = {};  // Relacionar departamentos con municipios
 
-            canvas.addEventListener('mousemove', function (e) {
-                if (dibujoActivo) {
-                    if (tipoHerramienta === 'lapiz') {
-                        context.lineTo(e.offsetX, e.offsetY);
-                        context.strokeStyle = color;
-                        context.lineWidth = grosor;
-                        context.stroke();
-                    } else if (tipoHerramienta === 'borrador') {
-                        context.clearRect(e.offsetX - grosor / 2, e.offsetY - grosor / 2, grosor, grosor);
-                    }
+        // Función para cargar el archivo TablaColombia.mdbx
+        document.getElementById("archivoColombia").addEventListener("change", function(event) {
+            const archivo = event.target.files[0];
+            if (archivo) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const data = e.target.result;
+
+                    // Separar los datos por líneas
+                    const lineas = data.trim().split('\n');
+                    const selectDepartamentosNacimiento = document.getElementById("departamentosNacimiento");
+                    const selectDepartamentosResidencia = document.getElementById("departamentosResidencia");
+
+                    // Limpiar los departamentos y municipios anteriores
+                    departamentosData = [];
+                    municipiosData = [];
+                    departamentosMunicipios = {}; // Limpiar la relación
+
+                    // Añadir el primer valor para seleccionar un departamento
+                    selectDepartamentosNacimiento.innerHTML = '<option value="">Seleccione un Departamento</option>';
+                    selectDepartamentosResidencia.innerHTML = '<option value="">Seleccione un Departamento</option>';
+
+                    // Iterar sobre cada línea y separar las columnas
+                    lineas.forEach(linea => {
+                        const [codigoDepto, nombreDepto, codigoMunicipio, nombreMunicipio] = linea.split('|');
+
+                        if (codigoDepto && nombreDepto && codigoMunicipio && nombreMunicipio) {
+                            // Agregar el municipio a la lista de municipios
+                            municipiosData.push({ codigoDepto, codigoMunicipio, nombreMunicipio });
+
+                            // Relacionar el municipio con su departamento
+                            if (!departamentosMunicipios[codigoDepto]) {
+                                departamentosMunicipios[codigoDepto] = [];
+                            }
+                            departamentosMunicipios[codigoDepto].push({ codigoMunicipio, nombreMunicipio });
+
+                            // Agregar el departamento solo si no está agregado ya
+                            if (!departamentosData.some(depto => depto.codigo === codigoDepto)) {
+                                departamentosData.push({ codigo: codigoDepto, nombre: nombreDepto });
+
+                                // Crear el <option> para el departamento de nacimiento
+                                const optionNacimiento = document.createElement("option");
+                                optionNacimiento.value = codigoDepto.trim();  // Usamos el código del departamento
+                                optionNacimiento.textContent = nombreDepto.trim();  // Nombre del departamento
+                                selectDepartamentosNacimiento.appendChild(optionNacimiento);
+
+                                // Crear el <option> para el departamento de residencia
+                                const optionResidencia = document.createElement("option");
+                                optionResidencia.value = codigoDepto.trim();  // Usamos el código del departamento
+                                optionResidencia.textContent = nombreDepto.trim();  // Nombre del departamento
+                                selectDepartamentosResidencia.appendChild(optionResidencia);
+                            }
+                        }
+                    });
+
+                    console.log("Departamentos únicos:", departamentosData);
+                    console.log("Municipios cargados:", municipiosData);
+                    console.log("Departamentos relacionados con municipios:", departamentosMunicipios);
+                };
+
+                // Leer el archivo como texto
+                reader.readAsText(archivo);
+            } else {
+                console.error("No se seleccionó ningún archivo.");
+            }
+        });
+
+        // Función para manejar el cambio de selección de departamento de nacimiento
+        document.getElementById("departamentosNacimiento").addEventListener("change", function() {
+            const codigoDepartamentoSeleccionado = this.value;
+            cargarMunicipios(codigoDepartamentoSeleccionado, 'Nacimiento');
+        });
+
+        // Función para manejar el cambio de selección de departamento de residencia
+        document.getElementById("departamentosResidencia").addEventListener("change", function() {
+            const codigoDepartamentoSeleccionado = this.value;
+            cargarMunicipios(codigoDepartamentoSeleccionado, 'Residencia');
+        });
+
+        // Función para cargar los municipios correspondientes al departamento seleccionado
+        function cargarMunicipios(codigoDepartamentoSeleccionado, tipo) {
+            let selectMunicipios;
+            if (tipo === 'Nacimiento') {
+                selectMunicipios = document.getElementById("municipiosNacimiento");
+            } else if (tipo === 'Residencia') {
+                selectMunicipios = document.getElementById("municipiosResidencia");
+            }
+
+            // Limpiar el <select> de municipios
+            selectMunicipios.innerHTML = '<option value="">Seleccione un Municipio</option>';
+
+            // Filtrar los municipios por departamento
+            const municipiosFiltrados = departamentosMunicipios[codigoDepartamentoSeleccionado];
+
+            // Verificar si se encontraron municipios
+            if (municipiosFiltrados && municipiosFiltrados.length > 0) {
+                municipiosFiltrados.forEach(municipio => {
+                    const option = document.createElement("option");
+                    option.value = municipio.codigoMunicipio;
+                    option.textContent = municipio.nombreMunicipio;
+                    selectMunicipios.appendChild(option);
+                });
+            } else {
+                // Si no se encuentran municipios, agregar una opción de "No hay municipios"
+                const option = document.createElement("option");
+                option.disabled = true;
+                option.textContent = "No hay municipios para este departamento";
+                selectMunicipios.appendChild(option);
+            }
+        }
+
+         //======================================================================
+        // VARIABLES
+        //======================================================================
+            let miCanvas = document.querySelector('#pizarra');
+            let lineas = [];
+            let pintarLinea = false;
+            let nuevaPosicionX = 0;
+            let nuevaPosicionY = 0;
+            let colorLapiz = "#000000";
+            let grosorLapiz = 5;
+
+            // Función para ajustar el tamaño del canvas y redibujar las líneas
+            function ajustarCanvas() {
+                const rect = miCanvas.getBoundingClientRect();
+                const prevWidth = miCanvas.width;
+                const prevHeight = miCanvas.height;
+
+                miCanvas.width = rect.width;
+                miCanvas.height = rect.height;
+
+                // Redibujar líneas escaladas si ya existen
+                if (lineas.length > 0 && prevWidth && prevHeight) {
+                    const escalaX = miCanvas.width / prevWidth;
+                    const escalaY = miCanvas.height / prevHeight;
+
+                    lineas = lineas.map(segmento =>
+                        segmento.map(punto => ({
+                            x: punto.x * escalaX,
+                            y: punto.y * escalaY
+                        }))
+                    );
+
+                    dibujarTodo();
                 }
+            }
+
+            // Redibuja todas las líneas guardadas
+            function dibujarTodo() {
+                const ctx = miCanvas.getContext('2d');
+                ctx.clearRect(0, 0, miCanvas.width, miCanvas.height);
+                ctx.lineJoin = ctx.lineCap = 'round';
+                ctx.lineWidth = grosorLapiz;
+                ctx.strokeStyle = colorLapiz;
+
+                ctx.beginPath();
+                lineas.forEach(segmento => {
+                    ctx.moveTo(segmento[0].x, segmento[0].y);
+                    segmento.forEach(punto => {
+                        ctx.lineTo(punto.x, punto.y);
+                    });
+                });
+                ctx.stroke();
+            }
+
+            // Inicializar canvas
+            ajustarCanvas();
+            window.addEventListener('resize', ajustarCanvas);
+            window.addEventListener('load', ajustarCanvas);
+
+            // Clase para guardar imagen
+            class GuardarImagen {
+                constructor(canvas) {
+                    this.canvas = canvas;
+                }
+
+                guardar(nombre) {
+                    const dataUrl = this.canvas.toDataURL("image/png");
+                    const enlace = document.createElement("a");
+                    enlace.href = dataUrl;
+                    enlace.download = `${nombre}.png`;
+                    enlace.target = '_self';
+                    document.body.appendChild(enlace);
+                    enlace.click();
+                    document.body.removeChild(enlace);
+                }
+            }
+
+            const guardarImagen = new GuardarImagen(miCanvas);
+
+            // Eventos de dibujo
+            function empezarDibujo() {
+                pintarLinea = true;
+                lineas.push([]);
+            }
+
+            function guardarLinea() {
+                lineas[lineas.length - 1].push({
+                    x: nuevaPosicionX,
+                    y: nuevaPosicionY
+                });
+            }
+
+            function dibujarLinea(event) {
+                event.preventDefault();
+                if (!pintarLinea) return;
+
+                const rect = miCanvas.getBoundingClientRect();
+
+                if (event.changedTouches == undefined) {
+                    nuevaPosicionX = event.clientX - rect.left;
+                    nuevaPosicionY = event.clientY - rect.top;
+                } else {
+                    nuevaPosicionX = event.changedTouches[0].clientX - rect.left;
+                    nuevaPosicionY = event.changedTouches[0].clientY - rect.top;
+                }
+
+                guardarLinea();
+                dibujarTodo();
+            }
+
+            function pararDibujar() {
+                pintarLinea = false;
+                guardarLinea();
+            }
+
+            function limpiarCanvas() {
+                const ctx = miCanvas.getContext('2d');
+                ctx.clearRect(0, 0, miCanvas.width, miCanvas.height);
+                lineas = [];
+            }
+
+            // Eventos del canvas
+            miCanvas.addEventListener('mousedown', empezarDibujo, false);
+            miCanvas.addEventListener('mousemove', dibujarLinea, false);
+            miCanvas.addEventListener('mouseup', pararDibujar, false);
+
+            miCanvas.addEventListener('touchstart', empezarDibujo, false);
+            miCanvas.addEventListener('touchmove', dibujarLinea, false);
+            miCanvas.addEventListener('touchend', pararDibujar, false);
+
+            // Controles
+            document.querySelector('#limpiar').addEventListener('click', limpiarCanvas);
+            document.querySelector('#colorTinta').addEventListener('input', e => colorLapiz = e.target.value);
+            document.querySelector('#grosorLapiz').addEventListener('input', e => grosorLapiz = e.target.value);
+
+            document.querySelector('#guardar').addEventListener('click', () => {
+            const nombreFirma = document.querySelector('#nombreFirma').value.trim();
+            const numeroDocumentoFirma = document.querySelector('#numeroTrasladoFirma').value.trim();
+
+            // ✅ Validar que el número no esté vacío
+            if (!numeroDocumentoFirma) {
+                alert('Por favor, ingresa el número de traslado antes de guardar.');
+                return; // Detiene la ejecución si está vacío
+            }
+
+            const nombreArchivo = `${nombreFirma}-${numeroDocumentoFirma}`;
+            guardarImagen.guardar(nombreArchivo);
+        });
+
+
+        function showContent(tabId) {
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => {
+                content.classList.remove('active-tab');
+            });
+            const selectedTab = document.getElementById(tabId);
+            selectedTab.classList.add('active-tab');
+        }
+
+        showContent('registro-pacientes');
+
+        function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year}-${hours}:${minutes}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentDateTime = getCurrentDateTime();
+            document.getElementById('fechaHoraSalida').value = currentDateTime;
+            document.getElementById('fechaHoraLlegadaUno').value = currentDateTime;
+            document.getElementById('fechaHoraLlegadaDos').value = currentDateTime;
+        });
+
+
+        document.getElementById('registroForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+                const departamentoNacimiento = document.getElementById("departamentosNacimiento").value;
+                const municipioNacimiento = document.getElementById("municipiosNacimiento").value;
+                const departamentoResidencia = document.getElementById("departamentosResidencia").value;
+                const municipioResidencia = document.getElementById("municipiosResidencia").value;
+
+            const csvContent = [
+                ['Primer Nombre','Segundo Nombre','Primer Apellido','Segundo Apellido', 'Tipo Documento', 'Número Documento', 'Género', 'Fecha Nacimiento', 'Departamento Nacimiento', 'Municipio Nacimiento', 'Aseguradora', 'Departamento Residencia', 'Municipio Residencia','Dirección', 'Teléfono'],
+                [ data.primernombre ,data.segundonombre,data.primerapellido,data.segundoapellido, data.tipoDocumento, data.numeroDocumento, data.genero, data.fechaNacimiento,departamentoNacimiento,municipioNacimiento, data.aseguradora, departamentoResidencia, municipioResidencia, data.direccion, data.telefono]
+            ];
+
+            const csvRows = csvContent.map(row => row.join(',')).join('\n');
+
+            // ✅ Solo UNA vez se define el blob, ahora con charset utf-8
+            const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8' });
+
+            // ✅ Solo UNA vez se define el nombre del archivo
+            const numeroDocumento = data.numeroDocumento || 'desconocido';
+            const fileName = `Paciente-${numeroDocumento}.csv`;
+
+            // ✅ FileSaver.js reemplaza las 4 líneas antiguas
+            saveAs(blob, fileName);
+
+            alert('¡Datos del paciente guardados correctamente en la base de datos!');
+        });
+
+        document.getElementById('trasladoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
             });
 
-            canvas.addEventListener('mouseup', function () {
-                dibujoActivo = false;
-            });
+            const csvContent = [
+                ['Número Traslado', 'Origen', 'Fecha y Hora de Salida', 'Destino Uno', 'Fecha y Hora de Llegada Uno', 'Destino Dos', 'Fecha y Hora de Llegada Dos', 'Motivo de Traslado', 'Médico de Traslado', 'Enfermera de Traslado', 'Conductor de Traslado', 'Profesional que Entrega', 'Profesional que Recibe Destino Uno', 'Profesional que Recibe Destino Dos','Nombre del Acompañante', 'Teléfono del Acompañante', 'Notas de Traslado'],
+                [data.numeroTraslado, data.origen, data.fechaHoraSalida, data.destinoUno, data.fechaHoraLlegadaUno, data.destinoDos, data.fechaHoraLlegadaDos, data.motivoTraslado, data.medicoTraslado, data.enfermeraTraslado, data.conductorTraslado, data.profesionalEntrega, data.profesionalRecibeUno, data.profesionalRecibeDos,data.nombreAcompañante, data.telefonoAcompañante, data.notasTraslado]
+            ];
 
-            canvas.addEventListener('mouseout', function () {
-                dibujoActivo = false;
-            });
-        }
+            const csvRows = csvContent.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvRows], { type: 'text/csv' });
 
-        // Cambiar color
-        function cambiarColor(canvasId) {
-            const colorPicker = document.getElementById(`color${canvasId.charAt(0).toUpperCase() + canvasId.slice(1)}`);
-            color = colorPicker.value;
-        }
+            const numeroTraslado = data.numeroTraslado || 'desconocido';
+            const fileName = `Traslado-${numeroTraslado}.csv`;
 
-        // Seleccionar herramienta de lápiz
-        function seleccionarLapiz(canvasId) {
-            tipoHerramienta = 'lapiz';
-        }
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
 
-        // Seleccionar herramienta de borrador
-        function seleccionarBorrador(canvasId) {
-            tipoHerramienta = 'borrador';
-        }
-
-        // Limpiar el lienzo
-        function limpiarFirma(firmaId) {
-            const canvas = document.getElementById(firmaId);
-            const context = canvas.getContext('2d');
-            context.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        // Inicialización de las firmas
-        window.onload = function () {
-            iniciarDibujo('firmaPaciente');
-            iniciarDibujo('firmaEntrega');
-            iniciarDibujo('firmaRecibe1');
-            iniciarDibujo('firmaRecibe2');
-        };
+            alert('¡Datos del traslado guardados correctamente en la base de datos!');
+        });
     </script>
-
 </body>
 </html>
