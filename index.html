@@ -164,10 +164,21 @@
       padding: 5; /* Elimina cualquier espacio interno */
     }
 
+
+        /* 🔹 Ajuste específico para campos de fecha y listas */
+        select,
+        input[type="date"],
+        input[type="time"],
+        input[type="datetime-local"] {
+            height: 40px;        /* 👈 altura exacta */
+            padding: 8px;        /* mantiene el espaciado interno */
+            line-height: 1.2;    /* centra el texto verticalmente */
+        }
+
     </style>
 </head>
 <body>
-    <h1>Ambulancia Renacer IPS 3</h1>
+    <h1>Ambulancia Renacer IPS</h1>
 
     <div class="tabs">
         <div class="tab" onclick="showContent('registro-pacientes')">Registro de pacientes</div>
