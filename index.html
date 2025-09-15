@@ -170,9 +170,13 @@
         input[type="date"],
         input[type="time"],
         input[type="datetime-local"] {
-            height: 40px;        /* 👈 altura exacta */
-            padding: 8px;        /* mantiene el espaciado interno */
-            line-height: 1.2;    /* centra el texto verticalmente */
+            height: 40px;          /* altura uniforme   */
+            padding: 8px;          /* espaciado interno */
+            line-height: 1.2;
+            box-sizing: border-box; /* 👈 asegura mismo cálculo de ancho */
+            -webkit-appearance: none; /* quita estilo nativo WebKit */
+            -moz-appearance: none;    /* quita estilo nativo Firefox */
+            appearance: none;         /* quita estilo nativo estándar */
         }
 
     </style>
