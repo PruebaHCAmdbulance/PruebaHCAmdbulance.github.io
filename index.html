@@ -14,7 +14,9 @@
         background-color: #fff;
         border: 2px solid #000;
         display: block;
-        }
+        
+        touch-action: none; /* evita scroll en iOS/Android mientras dibujas */
+    }
 
         body {
             background-color: #121212;
@@ -486,9 +488,6 @@
             }
         }
 
-         //======================================================================
-        // VARIABLES
-        //======================================================================
             let miCanvas = document.querySelector('#pizarra');
             let lineas = [];
             let pintarLinea = false;
@@ -503,8 +502,11 @@
                 const prevWidth = miCanvas.width;
                 const prevHeight = miCanvas.height;
 
-                miCanvas.width = rect.width;
-                miCanvas.height = rect.height;
+                const dpr = window.devicePixelRatio || 1;
+                miCanvas.width = rect.width * dpr;
+                miCanvas.height = rect.height * dpr;
+                const ctx = miCanvas.getContext('2d');
+                ctx.scale(dpr, dpr);
 
                 // Redibujar líneas escaladas si ya existen
                 if (lineas.length > 0 && prevWidth && prevHeight) {
@@ -569,7 +571,8 @@
             const guardarImagen = new GuardarImagen(miCanvas);
 
             // Eventos de dibujo
-            function empezarDibujo() {
+            function empezarDibujo(e) {
+                e.preventDefault();
                 pintarLinea = true;
                 lineas.push([]);
             }
@@ -582,6 +585,7 @@
             }
 
             function dibujarLinea(event) {
+                event.preventDefault();
                 event.preventDefault();
                 if (!pintarLinea) return;
 
@@ -610,14 +614,11 @@
                 lineas = [];
             }
 
-            // Eventos del canvas
-            miCanvas.addEventListener('mousedown', empezarDibujo, false);
-            miCanvas.addEventListener('mousemove', dibujarLinea, false);
-            miCanvas.addEventListener('mouseup', pararDibujar, false);
-
-            miCanvas.addEventListener('touchstart', empezarDibujo, false);
-            miCanvas.addEventListener('touchmove', dibujarLinea, false);
-            miCanvas.addEventListener('touchend', pararDibujar, false);
+            // Eventos del canvas (Pointer Events unificados)
+            miCanvas.addEventListener('pointerdown', empezarDibujo, false);
+            miCanvas.addEventListener('pointermove', dibujarLinea, false);
+            miCanvas.addEventListener('pointerup', pararDibujar, false);
+            miCanvas.addEventListener('pointerleave', pararDibujar, false);
 
             // Controles
             document.querySelector('#limpiar').addEventListener('click', limpiarCanvas);
@@ -643,9 +644,6 @@ document.querySelector('#guardar').addEventListener('click', () => {
 
     guardarImagen.guardar(nombreArchivo);
 });
-
-
-
 
         
         function showContent(tabId) {
